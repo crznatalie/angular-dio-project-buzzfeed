@@ -38,7 +38,7 @@ finished:boolean = false
 
   playerChoose(value:string){
     this.answers.push(value)
-    console.log(this.answers)
+    this.nextStep()
   }
 
   async nextStep(){
@@ -46,8 +46,26 @@ finished:boolean = false
     if(this.questionMaxIndex > this.questionIndex) {
         this.questionSelected = this.questions[this.questionIndex]
     } else {
+      const finalAnswer:string = await this.checkResult(this.answers)
       this.finished = true
+      this.answerSelected = quizz_questions.results[finalAnswer as keyof typeof quizz_questions.results]
     }
   }
+
+  async checkResult(answers:string[]){
+    const result = answers.reduce((previous, current, i, arr) => {
+      if(
+        arr.filter(item => item === previous).length >
+        arr.filter(item => item === current).length
+
+      ){
+        return previous
+      } else {
+        return current
+      }
+    })
+    return result
+  }
+
 
 }
